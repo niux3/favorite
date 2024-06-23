@@ -1,0 +1,120 @@
+.grid-container{
+    color: #444;
+}
+
+.sticky{
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid #efefef;
+    z-index: 10000;
+}
+
+aside nav{
+    position: sticky;
+    top: 140px;
+}
+
+select{
+    margin: 0;
+}
+
+.card{
+    transition: opacity 400ms;
+    opacity: 0;
+    visibility: hidden;
+}
+.card.display{
+    opacity: 1;
+    visibility: visible;
+}
+
+.overlay{
+    z-index: 5000;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    background-color: transparent;
+    pointer-events:none;
+    transition: all 400ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay.display{
+    opacity: 1;
+    pointer-events: all;
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #666;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.reveal-overlay{
+    display: block;
+    z-index: 50000;
+}
+
+.reveal{
+    display: block;
+    z-index: 55000;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+input[type=text], input[type=password]{
+    margin-bottom: 0;
+}
+label{
+    margin-bottom: 16px;
+}
+
+.error{
+    color: #f00;
+}
+
+.wrap-illus{
+    position: relative;
+    overflow: hidden;
+    min-height: 172px;
+}
+.wrap-illus .illus{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.25);
+
+}
+.wrap-login{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrap-login form{
+    max-width: 33%;
+    width: 100%;
+
+}
