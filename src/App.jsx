@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import xhr from "./hooks/xhr"
+import xhr from "./libs/xhr"
 import Dashboard from "./components/Dashboard"
 import Login from "./components/Login"
 import Register from "./components/Register"

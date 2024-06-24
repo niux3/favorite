@@ -5,6 +5,7 @@ import Main from './Main'
 import Loader from './Loader'
 import Modal from './Modal'
 import FormAddLink from './FormAddLink'
+import xhr from "../libs/xhr"
 
 
 function Dashboard(){
@@ -35,18 +36,24 @@ function Dashboard(){
             errors['name'] = 'ne doit pas être vide'
         }
 
-        if(!/^(https?:\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/.test(form.get('url'))){
+        if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)$/.test(form.get('url'))){
             errors['url'] = "l'url fournie ne semble pas valide"
         }
 
         setErrorForm(errors)
         if(Array.from(form.keys()).every(k => errors[k] === '')){
             setModal(false)
-            setLinks(links => links = [...links, {
-                'id': new Date().getTime(),
-                'name': form.get('name'),
-                'url': form.get('url')
-            }])
+            let options = {
+                "method": "POST",
+                "body": JSON.stringify({
+                    'id': new Date().getTime(),
+                    'name': form.get('name'),
+                    'url': form.get('url')
+                })
+            }
+            xhr('http://localhost:8000/add', options).then(({data, errorServer, loading}) => {
+                console.log(data)
+            })
 
         }
     }

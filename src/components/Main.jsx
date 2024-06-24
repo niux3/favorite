@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import xhr from '../hooks/xhr'
+import xhr from '../libs/xhr'
 import Aside from './Aside'
 import Content from './Content'
 
