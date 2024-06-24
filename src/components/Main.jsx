@@ -4,15 +4,8 @@ import Aside from './Aside'
 import Content from './Content'
 
 
-function Main(){
-    let [rows, setRows] = useState([]),
-        [links, setLinks] = useState([])
-
-    useEffect(()=>{
-        xhr('http://localhost:8000/',{ "method": "GET" }).then(({data, errorServer, loading})=>{
-            setLinks(links => links = [...data])
-        })
-    }, [])
+function Main({links}){
+    let [rows, setRows] = useState([])
 
     let onGetRss = e =>{
         e.preventDefault()

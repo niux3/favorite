@@ -37,29 +37,32 @@ export default class FavoriteController{
     add(req, res){
         if(req.method == 'POST' && req.headers['x-requested-with'] === 'XMLHttpRequest'){
             let {id, name, url} = req.body,
-                errors = {}
+                errors = {},
+                rows = []
             db.getData("/favorites").then(data =>{
                 if(name.trim() ===''){
                     errors['name'] = "Ce champ ne doit pas être  vide"
                 }
 
-                if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)$/.test(url)){
+                if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)?$/.test(url)){
                     errors['url'] = "l'url fournie ne semble pas valide"
                 }
-
+                
                 if(Object.keys(errors).length === 0){
-                    let row = [...data, {
+                    rows = [...data, {
                         id,
                         name,
                         url
                     }]
-                    db.push("/favorites", row)
-                    res.status(201).send({
-                        result: 'ok'
-                    })
+                    db.push("/favorites", rows)
                 }
-                res.status(400)
+                res.status(201).send({
+                    rows,
+                    result: 'ok',
+                    errors
+                })
             })
         }
+        res.status(400)
     }
 }

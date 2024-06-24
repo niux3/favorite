@@ -10,11 +10,17 @@ import xhr from "../libs/xhr"
 
 function Dashboard(){
     let [modal, setModal] = useState(false),
+        [links, setLinks] = useState([]),
         [errorForm, setErrorForm] = useState({
             'name': '',
             'url': ''
         })
         
+    useEffect(()=>{
+        xhr('http://localhost:8000/',{ "method": "GET" }).then(({data, errorServer, loading})=>{
+            setLinks(links => links = [...data])
+        })
+    }, [])
 
     let showModal = e => {
         setErrorForm({
@@ -36,7 +42,7 @@ function Dashboard(){
             errors['name'] = 'ne doit pas être vide'
         }
 
-        if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)$/.test(form.get('url'))){
+        if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)?$/.test(form.get('url'))){
             errors['url'] = "l'url fournie ne semble pas valide"
         }
 
@@ -52,16 +58,15 @@ function Dashboard(){
                 })
             }
             xhr('http://localhost:8000/add', options).then(({data, errorServer, loading}) => {
-                console.log(data)
+                setLinks(data.rows)
             })
-
         }
     }
     return (
         <>
             { modal && <Modal closeModal={closeModal}><FormAddLink addLink={addLink} errorForm={errorForm} /></Modal> }
             <Header showModal={showModal} />
-            <Main />
+            <Main links={links} />
         </>
     )
 }
