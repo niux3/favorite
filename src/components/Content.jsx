@@ -17,15 +17,8 @@ function Content({rows}){
     }, [rows])
 
     for(let [i, row] of Object.entries(rows)){
-        let href = row.querySelector('link')? row.querySelector('link').textContent : '#',
-            img = row.querySelector('enclosure')? row.querySelector('enclosure').getAttribute('url') : '/bg.png',
-            text = row.querySelector('title')? row.querySelector('title').textContent : '&nbsp;'
-        output = [...output, <Card href={href} img={img} text={text} key={i} display={display} />]
+        output = [...output, <Card href={row.href} img={row.img} text={row.title} key={i} display={display} />]
     }
-
-        
-       
-
     return (
         <section className="cell medium-9 grid-x grid-margin-x">{rows.length > 0 && output}</section>
     )

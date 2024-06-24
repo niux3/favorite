@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-mock()
+// mock()
 
 for(let route of configuration.routes){
     let [controllerTxt, actionTxt] = route.view.split('.'),
