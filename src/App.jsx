@@ -5,7 +5,7 @@ import Login from "./components/Login"
 import Register from "./components/Register"
 
 function App() {
-    let [status, setStatus] = useState('login'),
+    let [status, setStatus] = useState('dashboard'),
         [errorFormLogin, setErrorFormLogin] = useState({
             'login': '',
             'password': ''

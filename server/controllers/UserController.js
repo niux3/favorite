@@ -13,7 +13,7 @@ export default class UserController{
 
     add(req, res){
         let { login, password, confirm } = req.body
-        if(req.method === 'POST' && Object.keys(req.body).length){
+        if(req.method === 'POST' && Object.keys(req.body).length && req.headers['x-requested-with'] === 'XMLHttpRequest'){
             db.getData("/users").then(data =>{
                 let errors = {}
                 if(login === ''){
@@ -49,5 +49,6 @@ export default class UserController{
                 })
             })
         }
+        res.send(404)
     }
 }

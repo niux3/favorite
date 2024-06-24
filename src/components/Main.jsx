@@ -17,7 +17,7 @@ function Main(){
     let onGetRss = e =>{
         e.preventDefault()
         xhr(`http://localhost:8000/${e.target.dataset.id}`,{ "method": "GET" }).then(({data, errorServer, loading})=>{
-            setRows(r => data)
+            setRows(data)
         })
     }
     return (
