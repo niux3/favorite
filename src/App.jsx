@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
-import useFetch from "./hooks/useFetch"
+import xhr from "./hooks/xhr"
 import Dashboard from "./components/Dashboard"
 import Login from "./components/Login"
 import Register from "./components/Register"
-
 
 function App() {
     let [status, setStatus] = useState('login'),
@@ -56,27 +55,17 @@ function App() {
                     break
             }
         }
-        console.log(output)
         setErrorFormRegister(errors)
         if(Object.values(errors).every(v => v === "")){
             let options = {
                 "method": "POST",
-                "header": new Headers({
-                    "X-Requested-With": "XMLHttpRequest",
-                    "Accept": "application/json",
-                    "Content-Type": 'application/json'
-                }),
-                "cache": 'no-cache',
-                "redirect": "follow",
-                "referrerPolicy": "no-referrer",
-                "mode": "cors",
                 "body": JSON.stringify(output)
             }
-            fetch('http://localhost:8000/auth/add',options).then(r => r.json()).then(d =>{
-                if(d.result === 'ok'){
+            xhr('http://localhost:8000/auth/add', options).then(({data, errorServer, loading}) => {
+                if(data.result === 'ok'){
                     setStatus('login')
                 }else{
-                    setErrorFormRegister(d.errors)
+                    setErrorFormRegister(data.errors)
                 }
             })
         }

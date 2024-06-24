@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
-import useFetch from '../hooks/useFetch'
+import xhr from '../hooks/xhr'
 import Aside from './Aside'
 import Content from './Content'
 
 
 function Main(){
-    let [rows, setRows] = useState([])
-    let {data, error, loading} = useFetch('http://localhost:8000/',{
-        "method": "GET"
-    })
+    let [rows, setRows] = useState([]),
+        [links, setLinks] = useState([])
+
+    useEffect(()=>{
+        xhr('http://localhost:8000/',{ "method": "GET" }).then(({data, errorServer, loading})=>{
+            setLinks(links => links = [...data])
+        })
+    }, [])
+
     let onGetRss = e =>{
         e.preventDefault()
         let options = {}
@@ -36,7 +41,7 @@ function Main(){
     return (
         <main className="grid-container margin-vertical-3">
             <div className="grid-x grid-margin-x">
-                {data && <Aside links={data} onGetRss={onGetRss} />}
+                {links && <Aside links={links} onGetRss={onGetRss} />}
                 {rows.length > 0 && <Content rows={rows} />}
             </div>
         </main>

@@ -13,44 +13,41 @@ export default class UserController{
 
     add(req, res){
         let { login, password, confirm } = req.body
-        console.log(req.body)
-        console.log('name', login)
-        console.log('password', password)
-        console.log('confirm', confirm)
+        if(req.method === 'POST' && Object.keys(req.body).length){
+            db.getData("/users").then(data =>{
+                let errors = {}
+                if(login === ''){
+                    errors['login'] = "Ce champs ne doit pas être vide"
+                }
 
-        db.getData("/users").then(data =>{
-            let errors = {}
-            if(login === ''){
-                errors['login'] = "Ce champs ne doit pas être vide"
-            }
+                if(password !== confirm){
+                    errors['confirm'] = "Ce champs doit être identique au mot de passe"
+                }
 
-            if(password !== confirm){
-                errors['confirm'] = "Ce champs doit être identique au mot de passe"
-            }
+                if(password.length <= 3){
+                    errors['password'] = "Ce champs doit contenir au moins 4 caractères"
+                }
 
-            if(password.length <= 3){
-                errors['password'] = "Ce champs doit contenir au moins 4 caractères"
-            }
+                if(data.filter(r => r.login === login).length > 0){
+                    errors['login'] = "Cet utilisateur existe déjà"
+                }
 
-            if(data.filter(r => r.login === login).length > 0){
-                errors['login'] = "Cet utilisateur existe déjà"
-            }
+                if(Object.keys(errors).length === 0){
+                    let row = [...data, {
+                        "id": new Date().getTime(),
+                        "login": login,
+                        "password": md5(password)
+                    }]
+                    db.push("/users", row)
+                }
 
-            if(Object.keys(errors).length === 0){
-                let row = [...data, {
-                    "id": new Date().getTime(),
-                    "login": login,
-                    "password": md5(password)
-                }]
-                db.push("/users", row)
-            }
-
-            let statusCode = Object.keys(errors).length > 0? 400 : 201
-            let result = Object.keys(errors).length > 0? 'ko' : 'ok'
-            res.status(statusCode).send({
-                result,
-                errors
+                let statusCode = Object.keys(errors).length > 0? 400 : 201
+                let result = Object.keys(errors).length > 0? 'ko' : 'ok'
+                res.status(statusCode).send({
+                    result,
+                    errors
+                })
             })
-        })
+        }
     }
 }
