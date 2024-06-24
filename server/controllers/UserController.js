@@ -12,15 +12,16 @@ export default class UserController{
     }
 
     add(req, res){
-        let { name, password, confirm } = req.body
-        console.log('name', name)
+        let { login, password, confirm } = req.body
+        console.log(req.body)
+        console.log('name', login)
         console.log('password', password)
         console.log('confirm', confirm)
 
         db.getData("/users").then(data =>{
             let errors = {}
-            if(name === ''){
-                errors['name'] = "Ce champs ne doit pas être vide"
+            if(login === ''){
+                errors['login'] = "Ce champs ne doit pas être vide"
             }
 
             if(password !== confirm){
@@ -31,14 +32,14 @@ export default class UserController{
                 errors['password'] = "Ce champs doit contenir au moins 4 caractères"
             }
 
-            if(data.filter(r => r.login === name).length > 0){
-                errors['name'] = "Cet utilisateur existe déjà"
+            if(data.filter(r => r.login === login).length > 0){
+                errors['login'] = "Cet utilisateur existe déjà"
             }
 
             if(Object.keys(errors).length === 0){
                 let row = [...data, {
                     "id": new Date().getTime(),
-                    "login": name,
+                    "login": login,
                     "password": md5(password)
                 }]
                 db.push("/users", row)

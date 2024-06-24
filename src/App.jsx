@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import useFetch from "./hooks/useFetch"
 import Dashboard from "./components/Dashboard"
 import Login from "./components/Login"
 import Register from "./components/Register"
@@ -33,7 +34,9 @@ function App() {
             'password': '',
             'confirm': ''
         }
+        let output = {}
         for(let [k, v]  of form.entries()){
+            output[k] = v
             switch(k){
                 case "password":
                     if(v.trim().length <= 3){
@@ -53,9 +56,29 @@ function App() {
                     break
             }
         }
+        console.log(output)
         setErrorFormRegister(errors)
         if(Object.values(errors).every(v => v === "")){
-            setStatus('login')
+            let options = {
+                "method": "POST",
+                "header": new Headers({
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json",
+                    "Content-Type": 'application/json'
+                }),
+                "cache": 'no-cache',
+                "redirect": "follow",
+                "referrerPolicy": "no-referrer",
+                "mode": "cors",
+                "body": JSON.stringify(output)
+            }
+            fetch('http://localhost:8000/auth/add',options).then(r => r.json()).then(d =>{
+                if(d.result === 'ok'){
+                    setStatus('login')
+                }else{
+                    setErrorFormRegister(d.errors)
+                }
+            })
         }
     }
     let toRegister = e =>{
