@@ -4,11 +4,21 @@ import md5 from 'md5'
 
 export default class UserController{
     login(req, res){
-        let { name, password } = req.body
-        console.log(req.body)
-        console.log('name', name)
-        console.log('password', password)
-        res.send('ok')
+        if(req.method === 'POST' && Object.keys(req.body).length && req.headers['x-requested-with'] === 'XMLHttpRequest'){
+            let { login, password } = req.body
+            db.getData("/users").then(data =>{
+                if(data.find(r => r.login === login && r.password === md5(password)) !== undefined){
+                    res.status(200).send({
+                        result: 'ok'
+                    })
+                }else{
+                    res.status(403).send({
+                        result: 'ko',
+                        errors: {'login': "utilisateur introuvable", "password": "utilisateur introuvable"}
+                    })
+                }
+            })
+        }
     }
 
     add(req, res){

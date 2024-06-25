@@ -5,7 +5,7 @@ import Login from "./components/Login"
 import Register from "./components/Register"
 
 function App() {
-    let [status, setStatus] = useState('dashboard'),
+    let [status, setStatus] = useState('login'),
         [errorFormLogin, setErrorFormLogin] = useState({
             'login': '',
             'password': ''
@@ -18,12 +18,21 @@ function App() {
 
     let onLogin = e =>{
         e.preventDefault()
-        let form = new FormData(e.target)
-        let errors = {
-            'login': '',
-            'password': ''
+        let form = new FormData(e.target),
+            output = {}
+        form.forEach((v, k) => output[k] = v)
+        let options = {
+            "method": "post",
+            "body": JSON.stringify(output)
         }
-        setStatus('dashboard')
+        xhr('http://localhost:8000/auth', options).then(({data, errorServer, loading}) =>{
+            console.log(data)
+            if(data.result === 'ok'){
+                setStatus('dashboard')
+            }else{
+                setErrorFormLogin(data.errors)
+            }
+        })
     }
     let onRegister = e =>{
         e.preventDefault()

@@ -35,34 +35,54 @@ export default class FavoriteController{
     }
 
     add(req, res){
+        let statusCode = 400
         if(req.method == 'POST' && req.headers['x-requested-with'] === 'XMLHttpRequest'){
             let {id, name, url} = req.body,
                 errors = {},
+                result = 'ko',
                 rows = []
             db.getData("/favorites").then(data =>{
                 if(name.trim() ===''){
-                    errors['name'] = "Ce champ ne doit pas être  vide"
+                    errors['name'] = "Ce champ ne doit pas être vide"
+                }
+
+                if(data.filter(r => r.name === name).length > 0){
+                    errors['name'] = "Ce titre éxiste déjà"
                 }
 
                 if(!/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?(rss|feed|xml)?$/.test(url)){
-                    errors['url'] = "l'url fournie ne semble pas valide"
+                    errors['url'] = "l'url fournie ne semble pas être valide"
                 }
                 
                 if(Object.keys(errors).length === 0){
-                    rows = [...data, {
-                        id,
-                        name,
-                        url
-                    }]
-                    db.push("/favorites", rows)
+                    fetch(url).then(resp => resp.text()).then(d =>{
+                        if(d.includes("<channel>")){
+                            rows = [...data, {
+                                id,
+                                name,
+                                url
+                            }]
+                            db.push("/favorites", rows)
+                            result = 'ok'
+                            statusCode = 201
+                        }else{
+                            errors['url'] = "l'url fournie ne semble pas être valide"
+                        }
+                        res.status(statusCode).send({
+                            rows,
+                            result,
+                            errors
+                        })
+                    })
+                }else{
+                    res.status(statusCode).send({
+                        rows,
+                        result,
+                        errors
+                    })
                 }
-                res.status(201).send({
-                    rows,
-                    result: 'ok',
-                    errors
-                })
             })
         }
-        res.status(400)
+        res.status(statusCode)
     }
 }

@@ -48,7 +48,6 @@ function Dashboard(){
 
         setErrorForm(errors)
         if(Array.from(form.keys()).every(k => errors[k] === '')){
-            setModal(false)
             let options = {
                 "method": "POST",
                 "body": JSON.stringify({
@@ -58,7 +57,12 @@ function Dashboard(){
                 })
             }
             xhr('http://localhost:8000/add', options).then(({data, errorServer, loading}) => {
-                setLinks(data.rows)
+                if(data.result  === 'ok'){
+                    setLinks(data.rows)
+                    setModal(false)
+                }else{
+                    setErrorForm(data.errors)
+                }
             })
         }
     }
