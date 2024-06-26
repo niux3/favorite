@@ -8,8 +8,6 @@ export default class FavoriteController{
          if(req.headers['x-requested-with'] === 'XMLHttpRequest'){
             db.getData("/favorites").then(data =>{
                 let rows = data.filter(row => row.user_id === parseInt(userId, 10))
-                console.table(data)
-                console.table(rows)
                 res.send({
                     rows
                 })
