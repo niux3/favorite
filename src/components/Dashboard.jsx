@@ -8,7 +8,7 @@ import FormAddLink from './FormAddLink'
 import xhr from "../libs/xhr"
 
 
-function Dashboard({userId}){
+function Dashboard({userId, onLogout}){
     let [modal, setModal] = useState(false),
         [links, setLinks] = useState([]),
         [errorForm, setErrorForm] = useState({
@@ -71,7 +71,7 @@ function Dashboard({userId}){
     return (
         <>
             { modal && <Modal closeModal={closeModal}><FormAddLink addLink={addLink} errorForm={errorForm} /></Modal> }
-            <Header showModal={showModal} />
+            <Header showModal={showModal} onLogout={onLogout} />
             <Main links={links} />
         </>
     )

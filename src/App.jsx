@@ -92,7 +92,7 @@ function App() {
     let view = {
         'login': <Login onLogin={onLogin} errorForm={errorFormLogin} toRegister={toRegister} />,
         'register': <Register toLogin={toLogin} errorForm={errorFormRegister} onRegister={onRegister} />,
-        'dashboard': <Dashboard userId={userId} />
+        'dashboard': <Dashboard userId={userId} onLogout={toLogin} />
     }
 
     return (<> {view[status]} </>)
