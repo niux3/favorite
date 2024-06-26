@@ -8,7 +8,7 @@ import FormAddLink from './FormAddLink'
 import xhr from "../libs/xhr"
 
 
-function Dashboard(){
+function Dashboard({userId}){
     let [modal, setModal] = useState(false),
         [links, setLinks] = useState([]),
         [errorForm, setErrorForm] = useState({
@@ -17,8 +17,9 @@ function Dashboard(){
         })
         
     useEffect(()=>{
-        xhr('http://localhost:8000/',{ "method": "GET" }).then(({data, errorServer, loading})=>{
-            setLinks(links => links = [...data])
+        let params = 
+        xhr(`http://localhost:8000/?userId=${userId}`, {"method": "GET"}).then(({data, errorServer, loading})=>{
+            setLinks(links => links = [...data.rows])
         })
     }, [])
 
@@ -53,7 +54,8 @@ function Dashboard(){
                 "body": JSON.stringify({
                     'id': new Date().getTime(),
                     'name': form.get('name'),
-                    'url': form.get('url')
+                    'url': form.get('url'),
+                    'userId': userId
                 })
             }
             xhr('http://localhost:8000/add', options).then(({data, errorServer, loading}) => {

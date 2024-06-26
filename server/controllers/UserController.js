@@ -7,9 +7,11 @@ export default class UserController{
         if(req.method === 'POST' && Object.keys(req.body).length && req.headers['x-requested-with'] === 'XMLHttpRequest'){
             let { login, password } = req.body
             db.getData("/users").then(data =>{
-                if(data.find(r => r.login === login && r.password === md5(password)) !== undefined){
+                let row = data.find(r => r.login === login && r.password === md5(password))
+                if(row !== undefined){
                     res.status(200).send({
-                        result: 'ok'
+                        result: 'ok',
+                        userId: row.id
                     })
                 }else{
                     res.status(403).send({

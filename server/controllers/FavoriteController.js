@@ -4,9 +4,17 @@ import xmldoc from 'xmldoc'
 
 export default class FavoriteController{
     index(req, res){
-        if(req.headers['x-requested-with'] === 'XMLHttpRequest'){
-            db.getData("/favorites").then(resp => res.send(resp))
-        }
+        let {userId} = req.query
+         if(req.headers['x-requested-with'] === 'XMLHttpRequest'){
+            db.getData("/favorites").then(data =>{
+                let rows = data.filter(row => row.user_id === parseInt(userId, 10))
+                console.table(data)
+                console.table(rows)
+                res.send({
+                    rows
+                })
+            })
+         }
     }
 
     show(req, res){
@@ -37,7 +45,7 @@ export default class FavoriteController{
     add(req, res){
         let statusCode = 400
         if(req.method == 'POST' && req.headers['x-requested-with'] === 'XMLHttpRequest'){
-            let {id, name, url} = req.body,
+            let {id, name, url, userId} = req.body,
                 errors = {},
                 result = 'ko',
                 rows = []
@@ -46,7 +54,7 @@ export default class FavoriteController{
                     errors['name'] = "Ce champ ne doit pas être vide"
                 }
 
-                if(data.filter(r => r.name === name).length > 0){
+                if(data.filter(r => r.name === name && r.userId === userId).length > 0){
                     errors['name'] = "Ce titre éxiste déjà"
                 }
 
@@ -60,7 +68,8 @@ export default class FavoriteController{
                             rows = [...data, {
                                 id,
                                 name,
-                                url
+                                url,
+                                'user_id': userId
                             }]
                             db.push("/favorites", rows)
                             result = 'ok'

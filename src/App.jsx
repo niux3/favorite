@@ -6,6 +6,7 @@ import Register from "./components/Register"
 
 function App() {
     let [status, setStatus] = useState('login'),
+        [userId, setUserId] = useState(null),
         [errorFormLogin, setErrorFormLogin] = useState({
             'login': '',
             'password': ''
@@ -26,8 +27,8 @@ function App() {
             "body": JSON.stringify(output)
         }
         xhr('http://localhost:8000/auth', options).then(({data, errorServer, loading}) =>{
-            console.log(data)
             if(data.result === 'ok'){
+                setUserId(data.userId)
                 setStatus('dashboard')
             }else{
                 setErrorFormLogin(data.errors)
@@ -91,7 +92,7 @@ function App() {
     let view = {
         'login': <Login onLogin={onLogin} errorForm={errorFormLogin} toRegister={toRegister} />,
         'register': <Register toLogin={toLogin} errorForm={errorFormRegister} onRegister={onRegister} />,
-        'dashboard': <Dashboard />
+        'dashboard': <Dashboard userId={userId} />
     }
 
     return (<> {view[status]} </>)
