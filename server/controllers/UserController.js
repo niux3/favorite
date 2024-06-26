@@ -27,6 +27,7 @@ export default class UserController{
         let { login, password, confirm } = req.body
         if(req.method === 'POST' && Object.keys(req.body).length && req.headers['x-requested-with'] === 'XMLHttpRequest'){
             db.getData("/users").then(data =>{
+                console.table(data)
                 let errors = {}
                 if(login === ''){
                     errors['login'] = "Ce champs ne doit pas être vide"
@@ -60,7 +61,7 @@ export default class UserController{
                     errors
                 })
             })
+            // res.status(404).end()
         }
-        res.send(404)
     }
 }
