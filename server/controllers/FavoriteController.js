@@ -5,6 +5,7 @@ import xmldoc from 'xmldoc'
 export default class FavoriteController{
     index(req, res){
         let {userId} = req.query
+        console.log(userId)
          if(req.headers['x-requested-with'] === 'XMLHttpRequest'){
             db.getData("/favorites").then(data =>{
                 let rows = data.filter(row => row.user_id === parseInt(userId, 10))
@@ -63,7 +64,8 @@ export default class FavoriteController{
                 if(Object.keys(errors).length === 0){
                     fetch(url).then(resp => resp.text()).then(d =>{
                         if(d.includes("<channel>")){
-                            rows = [...data, {
+                            rows = data.filter(row => row.user_id === parseInt(userId, 10))
+                            rows = [...rows, {
                                 id,
                                 name,
                                 url,
